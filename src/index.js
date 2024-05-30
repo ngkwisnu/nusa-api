@@ -39,5 +39,5 @@ app.use(cors({
 app.use(cookieParser());
 
 server.listen(PORT, HOST, () => {
-    console.log(`Server is running in http://localhost:${PORT}`);
+    console.log(`Server is running in http://${HOST}:${PORT}`);
 });
