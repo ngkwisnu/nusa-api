@@ -38,7 +38,7 @@ const testConnection = async () => {
         await dbPool.getConnection()
         console.log('Koneksi Berhasil');
     } catch (error) {
-        console.log(error);
+        console.log("Koneksi gagal:" + error);
     }
 }
 server.listen(PORT, HOST, () => {
