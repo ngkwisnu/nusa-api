@@ -43,5 +43,5 @@ const testConnection = async () => {
 }
 server.listen(PORT, HOST, () => {
     testConnection()
-    console.log(`Server is running in http://localhost:${PORT}`);
+    console.log(`Server is running in http://${HOST}:${PORT}`);
 });
