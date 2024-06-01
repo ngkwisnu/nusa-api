@@ -2,14 +2,14 @@ const wisataModel = require('../models/WisataModel')
 
 const getAllWisata = async(req, res) => {
     try {
-        const [ data ] = await wisataModel.getAllWisata()
+        const [ result ] = await wisataModel.getAllWisata()
         res.json({
             message: 'GET all wisata success!',
-            data: data
+            data: result
         })
     } catch (error) {
         res.status(500).json({
-            message: "Server error!",
+            message: "Server error wkwk!",
             serverMessage: error
         })
     }
@@ -43,7 +43,7 @@ const addWisata = async(req, res) => {
     const { body } = req;
     console.log(body);
     // Periksa apakah semua properti yang diperlukan ada dalam objek body
-    if (!body.nama || !body.lokasi || !body.jarak_lokasi || !body.harga || !body.deskripsi || !body.gambar1 || !body.gambar2 || !body.gambar3 || !body.gambar4 || !body.informasi_tourguide || !body.harga_termasuk || !body.kategori || !body.created_at || !body.updated_at) {
+    if (!body.nama || !body.lokasi || !body.jarak_lokasi || !body.harga || !body.deskripsi || !body.gambar1 || !body.gambar2 || !body.gambar3 || !body.gambar4 || !body.informasi_tourguide || !body.harga_termasuk || !body.kategori) {
         return res.status(400).json({
             message: 'Data yang dikirim tidak lengkap atau tidak sesuai format.'
         });
@@ -73,7 +73,7 @@ const updateWisata = async (req, res) => {
     const { body } = req;
     console.log(body);
     // Periksa apakah semua properti yang diperlukan ada dalam objek body
-    if (!body.nama || !body.lokasi || !body.jarak_lokasi || !body.harga || !body.deskripsi || !body.gambar1 || !body.gambar2 || !body.gambar3 || !body.gambar4 || !body.informasi_tourguide || !body.harga_termasuk || !body.kategori || !body.created_at || !body.updated_at) {
+    if (!body.nama || !body.lokasi || !body.jarak_lokasi || !body.harga || !body.deskripsi || !body.gambar1 || !body.gambar2 || !body.gambar3 || !body.gambar4 || !body.informasi_tourguide || !body.harga_termasuk || !body.kategori) {
         return res.status(400).json({
             message: 'Data yang dikirim tidak lengkap atau tidak sesuai format.',
             data: null

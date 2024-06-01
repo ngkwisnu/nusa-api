@@ -1,8 +1,12 @@
 const dbPool = require('../config/database')
 
 const getAllWisata = () => {
-    const SQLQuery = 'SELECT * FROM wisata'
-    return dbPool.execute(SQLQuery)
+    try {
+        const SQLQuery = 'SELECT * FROM wisata'
+        return dbPool.execute(SQLQuery)
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 const getWisataById = async(id) => {
@@ -16,8 +20,20 @@ const getWisataById = async(id) => {
 }
 
 const addWisata = (body) => {
-    const { nama, lokasi, jam_buka, jam_tutup, jarak_lokasi, harga, deskripsi, gambar1, gambar2, gambar3, gambar4, informasi_tourguide, harga_termasuk, kategori, created_at, updated_at } = body;
-    console.log(body);
+    const currentTime = new Date();
+  
+    const year = currentTime.getFullYear();
+    const month = ('0' + (currentTime.getMonth() + 1)).slice(-2); // Tambah 1 karena bulan dimulai dari 0
+    const date = ('0' + currentTime.getDate()).slice(-2);
+    const hours = ('0' + currentTime.getHours()).slice(-2);
+    const minutes = ('0' + currentTime.getMinutes()).slice(-2);
+    const seconds = ('0' + currentTime.getSeconds()).slice(-2);
+
+    // Format waktu ke dalam string
+    const created_at = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+    const updated_at = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+    const { nama, lokasi, jam_buka, jam_tutup, jarak_lokasi, harga, deskripsi, gambar1, gambar2, gambar3, gambar4, informasi_tourguide, harga_termasuk, kategori } = body;
+    // console.log(body);
     const SQLQuery = `
         INSERT INTO wisata (nama, lokasi, jam_buka, jam_tutup, jarak_lokasi, harga, deskripsi, gambar1, gambar2, gambar3, gambar4, informasi_tourguide, harga_termasuk, kategori, created_at, updated_at) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -27,7 +43,19 @@ const addWisata = (body) => {
 }
 
 const updateWisata = (body, id) => {
-    const { nama, lokasi, jarak_lokasi, harga, deskripsi, gambar1, gambar2, gambar3, gambar4, informasi_tourguide, harga_termasuk, kategori, created_at, updated_at } = body;
+    const { nama, lokasi, jarak_lokasi, harga, deskripsi, gambar1, gambar2, gambar3, gambar4, informasi_tourguide, harga_termasuk, kategori } = body;
+    const currentTime = new Date();
+  
+    const year = currentTime.getFullYear();
+    const month = ('0' + (currentTime.getMonth() + 1)).slice(-2); // Tambah 1 karena bulan dimulai dari 0
+    const date = ('0' + currentTime.getDate()).slice(-2);
+    const hours = ('0' + currentTime.getHours()).slice(-2);
+    const minutes = ('0' + currentTime.getMinutes()).slice(-2);
+    const seconds = ('0' + currentTime.getSeconds()).slice(-2);
+
+    // Format waktu ke dalam string
+    const created_at = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+    const updated_at = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
     const SQLQuery = `
         UPDATE wisata 
         SET nama = ?, lokasi = ?, jarak_lokasi = ?, harga = ?, deskripsi = ?, gambar1 = ?, gambar2 = ?, gambar3 = ?, gambar4 = ?, informasi_tourguide = ?, harga_termasuk = ?, kategori = ?, created_at = ?, updated_at = ? 
