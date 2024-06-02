@@ -41,10 +41,11 @@ const getUlasanById = async(req, res) => {
 
 const addUlasan = async (req, res) => {
     let { body } = req;
-    console.log(body);
-    const requiredFields = ['rating', 'ulasan', 'keunggulan', 'file', 'id_user', 'id_wisata', 'created_at', 'updated_at'];
+    let file = req.files['file'] ? req.files['file'][0].filename : null
+    const requiredFields = ['rating', 'ulasan', 'keunggulan', 'id_user', 'id_wisata'];
 
-    if (!requiredFields.every(field => body.hasOwnProperty(field))) {
+    const allFieldsPresent = requiredFields.every(field => Object.prototype.hasOwnProperty.call(body, field));
+    if (!allFieldsPresent) {
         return res.status(400).json({
             message: 'Data yang dikirim tidak lengkap atau tidak sesuai format.'
         });
@@ -56,7 +57,8 @@ const addUlasan = async (req, res) => {
                 message: `User hanya bisa memberikan ulasan sekali, User dengan ID: ${body.id_user} sudah memberikan ulasan!`
             });
         }
-        await ulasanModel.addUlasan(body);
+        fileUrl = `http://localhost:5000/api/files/${file}`
+        await ulasanModel.addUlasan(body, fileUrl);
         res.status(201).json({
             message: 'Tambah data ulasan berhasil!',
             data: body
@@ -72,10 +74,11 @@ const addUlasan = async (req, res) => {
 const updateUlasan = async (req, res) => {
     const { id } = req.params;
     let { body } = req;
-    console.log(body);
-    const requiredFields = ['rating', 'ulasan', 'keunggulan', 'file', 'id_user', 'id_wisata', 'created_at', 'updated_at'];
+    let file = req.files['file'] ? req.files['file'][0].filename : null
+    const requiredFields = ['rating', 'ulasan', 'keunggulan', 'id_user', 'id_wisata', 'created_at', 'updated_at'];
 
-    if (!requiredFields.every(field => body.hasOwnProperty(field))) {
+    const allFieldsPresent = requiredFields.every(field => Object.prototype.hasOwnProperty.call(body, field));
+    if (!allFieldsPresent) {
         return res.status(400).json({
             message: 'Data yang dikirim tidak lengkap atau tidak sesuai format.'
         });
@@ -86,12 +89,13 @@ const updateUlasan = async (req, res) => {
         const dataAlreadyExists = await ulasanModel.getUlasanByIdUser(body.id_user);
         if (dataAlreadyExists.length > 1) {
             return res.status(400).json({
-                message: `User hanya bisa memberikan ulasan sekali, User dengan ID: ${body.id_user} sudah memberikan ulasan!`
+                message: `User dengan ID: ${body.id_user} sudah memberikan ulasan!`
             });
         }
 
         // Lakukan pembaruan data
-        await ulasanModel.updateUlasan(body, id);
+        const fileUrl = `http://18.141.9.175:5000/api/files/${file}`;
+        await ulasanModel.updateUlasan(body, fileUrl, id);
 
         // Kirim respons berhasil
         res.status(201).json({

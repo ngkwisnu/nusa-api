@@ -38,25 +38,48 @@ const registerUser = (body) => {
     return dbPool.execute(SQLQuery, values);
 }
 
-const addUser = (body) => {
-    const { email, username, password, role, created_at, updated_at, nama, telepon, alamat, foto } = body;
-    console.log(body);
+const addUser = (body, fotoUrl) => {
+    const { email, username, password, role, nama, telepon, alamat } = body;
+    const currentTime = new Date();
+  
+    const year = currentTime.getFullYear();
+    const month = ('0' + (currentTime.getMonth() + 1)).slice(-2); // Tambah 1 karena bulan dimulai dari 0
+    const date = ('0' + currentTime.getDate()).slice(-2);
+    const hours = ('0' + currentTime.getHours()).slice(-2);
+    const minutes = ('0' + currentTime.getMinutes()).slice(-2);
+    const seconds = ('0' + currentTime.getSeconds()).slice(-2);
+
+    // Format waktu ke dalam string
+    const created_at = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+    const updated_at = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
     const SQLQuery = `
         INSERT INTO user (email, username, password, role, created_at, updated_at, nama, telepon, alamat, foto) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    const values = [ email, username, password, role, created_at, updated_at, nama, telepon, alamat, foto ];
+    const values = [ email, username, password, role, created_at, updated_at, nama, telepon, alamat, fotoUrl ];
     return dbPool.execute(SQLQuery, values);
 }
 
-const updateUser = (body, id) => {
-    const { email, username, password, role, created_at, updated_at, nama, telepon, alamat, foto } = body;
+const updateUser = (body, fotoUrl, id) => {
+    const { email, username, password, role, nama, telepon, alamat } = body;
+    const currentTime = new Date();
+  
+    const year = currentTime.getFullYear();
+    const month = ('0' + (currentTime.getMonth() + 1)).slice(-2); // Tambah 1 karena bulan dimulai dari 0
+    const date = ('0' + currentTime.getDate()).slice(-2);
+    const hours = ('0' + currentTime.getHours()).slice(-2);
+    const minutes = ('0' + currentTime.getMinutes()).slice(-2);
+    const seconds = ('0' + currentTime.getSeconds()).slice(-2);
+
+    // Format waktu ke dalam string
+    const created_at = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+    const updated_at = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
     const SQLQuery = `
         UPDATE user 
-        SET email = ?, username = ?, password = ?, role = ?, created_at = ?, updated_at = ?. nama = ?, telepon = ?, alamat = ?, foto = ?
+        SET email = ?, username = ?, password = ?, role = ?, created_at = ?, updated_at = ?, nama = ?, telepon = ?, alamat = ?, foto = ?
         WHERE id = ?
     `;
-    const values = [ email, username, password, role, created_at, updated_at, nama, telepon, alamat, foto, id ];
+    const values = [ email, username, password, role, created_at, updated_at, nama, telepon, alamat, fotoUrl, id ];
     return dbPool.execute(SQLQuery, values);
 }
 

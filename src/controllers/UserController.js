@@ -41,9 +41,9 @@ const getUserById = async(req, res) => {
 
 const addUser = async (req, res) => {
     const { body } = req;
-
+    foto = req.files['foto'] ? req.files['foto'][0].filename : null 
     // Periksa apakah semua properti yang diperlukan ada dalam objek body
-    if (!body.email ||!body.username ||!body.password ||!body.role || !body.nama || !body.telepon || !body.alamat || !body.foto) {
+    if (!body.email ||!body.username ||!body.password ||!body.role || !body.nama || !body.telepon || !body.alamat || !foto) {
         return res.status(400).json({
             message: 'Data yang dikirim tidak lengkap atau tidak sesuai format.'
         });
@@ -59,7 +59,8 @@ const addUser = async (req, res) => {
         }
 
         // Tambahkan data user
-        await userModel.addUser(body);
+        const fotoUrl = `http://18.141.9.175:5000/api/files/${foto}`;
+        await userModel.addUser(body, fotoUrl);
 
         // Kirim respons berhasil
         res.status(201).json({
@@ -77,14 +78,12 @@ const addUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     const { id } = req.params;
-    let { body } = req;
-    console.log(body);
-
+    const { body } = req;
+    foto = req.files['foto'] ? req.files['foto'][0].filename : null 
     // Periksa apakah semua properti yang diperlukan ada dalam objek body
-    if (!body.email ||!body.username ||!body.password ||!body.role || !body.nama || !body.telepon || !body.alamat || !body.foto) {
+    if (!body.email ||!body.username ||!body.password ||!body.role || !body.nama || !body.telepon || !body.alamat || !foto) {
         return res.status(400).json({
-            message: 'Data yang dikirim tidak lengkap atau tidak sesuai format.',
-            data: null
+            message: 'Data yang dikirim tidak lengkap atau tidak sesuai format.'
         });
     }
 
@@ -98,7 +97,8 @@ const updateUser = async (req, res) => {
         }
 
         // Lakukan pembaruan data user
-        await userModel.updateUser(body, id);
+        const fotoUrl = `http://18.141.9.175:5000/api/files/${foto}`;
+        await userModel.updateUser(body, fotoUrl, id);
 
         // Kirim respons berhasil
         res.status(201).json({

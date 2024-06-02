@@ -15,25 +15,48 @@ const getUlasanById = async(id) => {
     }
 }
 
-const addUlasan = (body) => {
-    const { rating, ulasan, keunggulan, file, id_user, id_wisata, created_at, updated_at } = body;
-    console.log(body);
+const addUlasan = (body, fileUrl) => {
+    const { rating, ulasan, keunggulan, id_user, id_wisata } = body;
+    const currentTime = new Date();
+  
+    const year = currentTime.getFullYear();
+    const month = ('0' + (currentTime.getMonth() + 1)).slice(-2); // Tambah 1 karena bulan dimulai dari 0
+    const date = ('0' + currentTime.getDate()).slice(-2);
+    const hours = ('0' + currentTime.getHours()).slice(-2);
+    const minutes = ('0' + currentTime.getMinutes()).slice(-2);
+    const seconds = ('0' + currentTime.getSeconds()).slice(-2);
+
+    // Format waktu ke dalam string
+    const created_at = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+    const updated_at = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
     const SQLQuery = `
         INSERT INTO ulasan (rating, ulasan, keunggulan, file, id_user, id_wisata, created_at, updated_at) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    const values = [ rating, ulasan, keunggulan, file, id_user, id_wisata, created_at, updated_at ];
+    const values = [ rating, ulasan, keunggulan, fileUrl, id_user, id_wisata, created_at, updated_at ];
     return dbPool.execute(SQLQuery, values);
 }
 
-const updateUlasan = (body, id) => {
-    const { rating, ulasan, keunggulan, file, id_user, id_wisata, created_at, updated_at } = body;
+const updateUlasan = (body, id, fileUrl) => {
+    const { rating, ulasan, keunggulan, id_user, id_wisata, created_at } = body;
+    const currentTime = new Date();
+  
+    const year = currentTime.getFullYear();
+    const month = ('0' + (currentTime.getMonth() + 1)).slice(-2); // Tambah 1 karena bulan dimulai dari 0
+    const date = ('0' + currentTime.getDate()).slice(-2);
+    const hours = ('0' + currentTime.getHours()).slice(-2);
+    const minutes = ('0' + currentTime.getMinutes()).slice(-2);
+    const seconds = ('0' + currentTime.getSeconds()).slice(-2);
+
+    // Format waktu ke dalam string
+    // const created_at = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+    const updated_at = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
     const SQLQuery = `
         UPDATE ulasan 
         SET rating = ?, ulasan = ?, keunggulan = ?, file = ?, id_user = ?, id_wisata = ?, created_at = ?, updated_at = ?
         WHERE id = ?
     `;
-    const values =  [ rating, ulasan, keunggulan, file, id_user, id_wisata, created_at, updated_at, id ];
+    const values =  [ rating, ulasan, keunggulan, fileUrl, id_user, id_wisata, created_at, updated_at, id ];
     return dbPool.execute(SQLQuery, values);
 }
 

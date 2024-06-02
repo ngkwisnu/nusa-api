@@ -19,7 +19,7 @@ const getWisataById = async(id) => {
     }
 }
 
-const addWisata = (body) => {
+const addWisata = (body, gambar1Url, gambar2Url, gambar3Url, gambar4Url) => {
     const currentTime = new Date();
   
     const year = currentTime.getFullYear();
@@ -32,19 +32,19 @@ const addWisata = (body) => {
     // Format waktu ke dalam string
     const created_at = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
     const updated_at = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
-    const { nama, lokasi, jam_buka, jam_tutup, jarak_lokasi, harga, deskripsi, gambar1, gambar2, gambar3, gambar4, informasi_tourguide, harga_termasuk, kategori } = body;
+    const { nama, lokasi, jam_buka, jam_tutup, jarak_lokasi, harga, deskripsi, informasi_tourguide, harga_termasuk, kategori } = body;
     // console.log(body);
     const SQLQuery = `
         INSERT INTO wisata (nama, lokasi, jam_buka, jam_tutup, jarak_lokasi, harga, deskripsi, gambar1, gambar2, gambar3, gambar4, informasi_tourguide, harga_termasuk, kategori, created_at, updated_at) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    const values = [ nama, lokasi, jam_buka, jam_tutup, jarak_lokasi, harga, deskripsi, gambar1, gambar2, gambar3, gambar4, informasi_tourguide, harga_termasuk, kategori, created_at, updated_at ];
+    const values = [ nama, lokasi, jam_buka, jam_tutup, jarak_lokasi, harga, deskripsi, gambar1Url, gambar2Url, gambar3Url, gambar4Url, informasi_tourguide, harga_termasuk, kategori, created_at, updated_at ];
     return dbPool.execute(SQLQuery, values);
 }
 
-const updateWisata = (body, id) => {
-    const { nama, lokasi, jarak_lokasi, harga, deskripsi, gambar1, gambar2, gambar3, gambar4, informasi_tourguide, harga_termasuk, kategori } = body;
-    const currentTime = new Date();
+const updateWisata = (body, gambar1Url, gambar2Url, gambar3Url, gambar4Url, id) => {
+    try {
+        const currentTime = new Date();
   
     const year = currentTime.getFullYear();
     const month = ('0' + (currentTime.getMonth() + 1)).slice(-2); // Tambah 1 karena bulan dimulai dari 0
@@ -56,13 +56,17 @@ const updateWisata = (body, id) => {
     // Format waktu ke dalam string
     const created_at = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
     const updated_at = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+    const { nama, lokasi, jam_buka, jam_tutup, jarak_lokasi, harga, deskripsi, informasi_tourguide, harga_termasuk, kategori } = body;
     const SQLQuery = `
         UPDATE wisata 
         SET nama = ?, lokasi = ?, jarak_lokasi = ?, harga = ?, deskripsi = ?, gambar1 = ?, gambar2 = ?, gambar3 = ?, gambar4 = ?, informasi_tourguide = ?, harga_termasuk = ?, kategori = ?, created_at = ?, updated_at = ? 
         WHERE id = ?
     `;
-    const values =  [ nama, lokasi, jarak_lokasi, harga, deskripsi, gambar1, gambar2, gambar3, gambar4, informasi_tourguide, harga_termasuk, kategori, created_at, updated_at, id ];
+    const values =  [ nama, lokasi, jarak_lokasi, harga, deskripsi, gambar1Url, gambar2Url, gambar3Url, gambar4Url, informasi_tourguide, harga_termasuk, kategori, created_at, updated_at, id ];
     return dbPool.execute(SQLQuery, values);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 const getWisataByName = async(nama) => {
