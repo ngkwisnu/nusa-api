@@ -41,10 +41,11 @@ const getPesananById = async(req, res) => {
 
 const addPesanan = async (req, res) => {
     let { body } = req;
-    console.log(body);
+    let file = req.files['file'] ? req.files['file'][0].filename : null;
     const requiredFields = ['total', 'tanggal_pemesanan', 'tanggal_bayar', 'tanggal_keberangkatan', 'jumlah_orang', 'kode_booking', 'status', 'metode_pembayaran', 'id_user', 'id_wisata'];
 
-    if (!requiredFields.every(field => body.hasOwnProperty(field))) {
+    const allFieldsPresent = requiredFields.every(field => Object.prototype.hasOwnProperty.call(body, field));
+    if (!allFieldsPresent) {
         return res.status(400).json({
             message: 'Data yang dikirim tidak lengkap atau tidak sesuai format.'
         });
@@ -56,10 +57,11 @@ const addPesanan = async (req, res) => {
                 message: `Pesanan dengan Kode Booking: ${body.kode_booking} sudah ada, silahkan gunakan kode booking yang lain!`
             });
         }
-        await pesananModel.addPesanan(body);
+        const fileUrl = `http://18.141.9.175:5000/api/files/${file}`;
+        await pesananModel.addPesanan(body, fileUrl);
         res.status(201).json({
             message: 'Tambah data pesanan berhasil!',
-            data: body
+            data: {body, fileUrl}
         });
     } catch (error) {
         res.status(500).json({
@@ -72,10 +74,11 @@ const addPesanan = async (req, res) => {
 const updatePesanan = async (req, res) => {
     const { id } = req.params;
     let { body } = req;
-    console.log(body);
+    let file = req.files['file'] ? req.files['file'][0].filename : null;
     const requiredFields = ['total', 'tanggal_pemesanan', 'tanggal_bayar', 'tanggal_keberangkatan', 'jumlah_orang', 'kode_booking', 'status', 'metode_pembayaran', 'id_user', 'id_wisata'];
 
-    if (!requiredFields.every(field => body.hasOwnProperty(field))) {
+    const allFieldsPresent = requiredFields.every(field => Object.prototype.hasOwnProperty.call(body, field));
+    if (!allFieldsPresent) {
         return res.status(400).json({
             message: 'Data yang dikirim tidak lengkap atau tidak sesuai format.'
         });
@@ -91,13 +94,15 @@ const updatePesanan = async (req, res) => {
         }
 
         // Lakukan pembaruan data
-        await pesananModel.updatePesanan(body, id);
+        const fileUrl = `http://18.141.9.175:5000/api/files/${file}`;
+        await pesananModel.updatePesanan(body, fileUrl, id);
 
         // Kirim respons berhasil
         res.status(201).json({
             message: `UPDATE pesanan dengan ID:${id} berhasil!`,
             data: {
                 id: id,
+                file: fileUrl,
                 ...body
             }
         });

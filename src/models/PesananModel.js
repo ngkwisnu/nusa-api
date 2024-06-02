@@ -15,25 +15,24 @@ const getPesananById = async(id) => {
     }
 }
 
-const addPesanan = (body) => {
+const addPesanan = (body, fileUrl) => {
     const { total, tanggal_pemesanan, tanggal_bayar, tanggal_keberangkatan, jumlah_orang, kode_booking, status, metode_pembayaran, id_user, id_wisata } = body;
-    console.log(body);
     const SQLQuery = `
-        INSERT INTO pesanan (total, tanggal_pemesanan, tanggal_bayar, tanggal_keberangkatan, jumlah_orang, kode_booking, status, metode_pembayaran, id_user, id_wisata) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO pesanan (total, tanggal_pemesanan, tanggal_bayar, tanggal_keberangkatan, jumlah_orang, kode_booking, file, status, metode_pembayaran, id_user, id_wisata) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    const values = [ total, tanggal_pemesanan, tanggal_bayar, tanggal_keberangkatan, jumlah_orang, kode_booking, status, metode_pembayaran, id_user, id_wisata ];
+    const values = [ total, tanggal_pemesanan, tanggal_bayar, tanggal_keberangkatan, jumlah_orang, kode_booking, fileUrl, status, metode_pembayaran, id_user, id_wisata ];
     return dbPool.execute(SQLQuery, values);
 }
 
-const updatePesanan = (body, id) => {
+const updatePesanan = (body, fileUrl, id) => {
     const { total, tanggal_pemesanan, tanggal_bayar, tanggal_keberangkatan, jumlah_orang, kode_booking, status, metode_pembayaran, id_user, id_wisata } = body;
     const SQLQuery = `
         UPDATE pesanan 
-        SET total = ?, tanggal_pemesanan = ?, tanggal_bayar = ?, tanggal_keberangkatan = ?, jumlah_orang = ?, kode_booking = ?, status = ?, metode_pembayaran = ?, id_user = ?, id_wisata = ?
+        SET total = ?, tanggal_pemesanan = ?, tanggal_bayar = ?, tanggal_keberangkatan = ?, jumlah_orang = ?, kode_booking = ?, status = ?, metode_pembayaran = ?, id_user = ?, id_wisata = ?, file = ?
         WHERE id = ?
     `;
-    const values =  [ total, tanggal_pemesanan, tanggal_bayar, tanggal_keberangkatan, jumlah_orang, kode_booking, status, metode_pembayaran, id_user, id_wisata, id ];
+    const values =  [ total, tanggal_pemesanan, tanggal_bayar, tanggal_keberangkatan, jumlah_orang, kode_booking, status, metode_pembayaran, id_user, id_wisata, fileUrl, id ];
     return dbPool.execute(SQLQuery, values);
 }
 
