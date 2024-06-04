@@ -95,7 +95,7 @@ const getUserByName = async(nama) => {
 
 const getUserByEmail = async (email) => {
     try {
-        const hasil = await dbPool.query(`SELECT * FROM user WHERE email = ?`, [email]);
+        const [hasil] = await dbPool.query(`SELECT * FROM user WHERE email = ?`, [email]);
         return hasil
     } catch (error) {
         console.error('Error in getUserByEmail ', error);
@@ -105,7 +105,7 @@ const getUserByEmail = async (email) => {
 
 const getUserByUsername = async (username) => {
     try {
-        const hasil = await dbPool.query(`SELECT * FROM user WHERE username = ?`, [username]);
+        const [hasil] = await dbPool.query(`SELECT * FROM user WHERE username = ?`, [username]);
         return hasil
     } catch (error) {
         console.error('Error in getUserByUsername ', error);

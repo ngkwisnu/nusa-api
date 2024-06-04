@@ -1,6 +1,6 @@
 const http = require('http');
 const PORT = 5000;
-const HOST = '0.0.0.0';
+const HOST = 'localhost';
 const express = require('express');
 const app = express();
 app.use(express.json());

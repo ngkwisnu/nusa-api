@@ -17,10 +17,12 @@ const register = async (req, res) => {
 
     try {
         // Cek apakah data dengan nama yang sama sudah ada
-        const dataAlreadyExists = await userModel.getUserByEmail(body.email);
+        const emailAlreadyExists = await userModel.getUserByEmail(body.email);
+        const usernameAlreadyExists = await userModel.getUserByUsername(body.username);
+        const dataAlreadyExists = emailAlreadyExists || usernameAlreadyExists;
         if (dataAlreadyExists.length > 0) {
             return res.status(400).json({
-                message: `Email: ${body.email} sudah terdaftar, silahkan Email yang lain!`
+                message: `Email: ${body.email} atau Username: ${body.username} sudah terdaftar, silahkan gunakan yang lain!`
             });
         }
 
@@ -43,14 +45,11 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
 
-    console.log(req.body);
     const username = req.body.username
     const password = req.body.password
 
     try{
-        console.log('hai');
-        let user = await userModel.getUserByUsername(username)
-        user = user[0][0]
+        let [user] = await userModel.getUserByUsername(username)
         if(!user){
             return res.status(404).json({
                 success: false,
