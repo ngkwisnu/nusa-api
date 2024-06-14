@@ -1,6 +1,8 @@
 const userModel = require("../models/UserModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 
 const register = async (req, res) => {
   const salt = bcrypt.genSaltSync(10);
@@ -115,4 +117,54 @@ const logout = async (req, res) => {
   res.end();
 };
 
-module.exports = { register, login, logout };
+const verify = async (req, res) => {
+  try {
+    const otpStore = {};
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      host: "smpt.gmail.com",
+      port: 587,
+      secure: false,
+      requireTLS: true,
+      auth: {
+        user: "nusaguide@gmail.com",
+        pass: "oobefwsyrlngsweq",
+      },
+    });
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).send("Email is required");
+    }
+    // Generate OTP
+    const otp = crypto.randomInt(1000, 9999).toString();
+
+    // Simpan OTP ke dalam penyimpanan sementara
+    otpStore[email] = otp;
+
+    // Kirim OTP ke email
+    const mailOptions = {
+      from: "nusaguide@gmail.com",
+      to: email,
+      subject: "Your OTP Code",
+      html: `<p>Silahkan Masukkan Kode OTP Berikut:</p><h1>${otp}</h1>`,
+    };
+
+    try {
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          return res.status(500).send(error);
+        }
+        res.status(200).json({
+          status: true,
+          message: "Kode OTP telah dikirim ke email anda!",
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = { register, login, logout, verify };
