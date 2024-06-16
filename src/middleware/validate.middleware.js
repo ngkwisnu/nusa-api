@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { isBlacklisted } = require("../middleware/tokenBlacklist");
 
 const authentication = (req, res, next) => {
   const authHeader = req.headers["authorization"];
