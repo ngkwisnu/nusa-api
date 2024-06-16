@@ -187,7 +187,7 @@ const changePassView = (req, res) => {
 };
 
 const savePassword = async (req, res) => {
-  const { id, password, konfirmasi } = req.body;
+  let { id, password, konfirmasi } = req.body;
   if (password !== konfirmasi) {
     const message = "Passowrd tidak sama!";
     res.render("change-pass", { id, message });
