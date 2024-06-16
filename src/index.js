@@ -1,8 +1,11 @@
 const http = require("http");
 const PORT = 5000;
-const HOST = "localhost";
+const HOST = "0.0.0.0";
 const express = require("express");
 const app = express();
+const path = require("path");
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "/views"));
 app.use(express.json());
 const server = http.createServer(app);
 // Impor dotenv
@@ -15,9 +18,9 @@ const corsOptions = {
   origin: true,
   credentials: true,
 };
+app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 const multer = require("multer");
-const path = require("path");
 const fs = require("fs");
 const imagesDir = path.join(__dirname, "..", "files");
 

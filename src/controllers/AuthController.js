@@ -135,8 +135,15 @@ const verify = async (req, res) => {
     if (!email) {
       return res.status(400).send("Email is required");
     }
+    const [dataUser] = await userModel.getUserByEmail(email);
+    if (dataUser.length > 0) {
+      return res.status(400).json({
+        message: `Email: ${body.nama} tidak terdaftar, silahkan masukkan email yang benar!`,
+      });
+    }
     // Generate OTP
     const otp = crypto.randomInt(1000, 9999).toString();
+    const link = `http://18.141.9.175:5000/auth/change-password/${dataUser.id}`;
 
     // Simpan OTP ke dalam penyimpanan sementara
     otpStore[email] = otp;
@@ -146,7 +153,12 @@ const verify = async (req, res) => {
       from: "nusaguide@gmail.com",
       to: email,
       subject: "Your OTP Code",
-      html: `<p>Silahkan Masukkan Kode OTP Berikut:</p><h1>${otp}</h1>`,
+      html: `<p>Silahkan Masukkan Kode OTP Berikut:</p><h1>${otp}</h1><p>Silahkan melakukan perubahan password melalui link berikut: ${link}</p>`,
+    };
+
+    const data = {
+      otp: otp,
+      link: link,
     };
 
     try {
@@ -157,6 +169,7 @@ const verify = async (req, res) => {
         res.status(200).json({
           status: true,
           message: "Kode OTP telah dikirim ke email anda!",
+          data: data,
         });
       });
     } catch (error) {
@@ -167,4 +180,41 @@ const verify = async (req, res) => {
   }
 };
 
-module.exports = { register, login, logout, verify };
+const changePassView = (req, res) => {
+  const { id } = req.params;
+  const message = null;
+  res.render("change-pass", { id, message });
+};
+
+const savePassword = async (req, res) => {
+  const { id, password, konfirmasi } = req.body;
+  if (password !== konfirmasi) {
+    const message = "Passowrd tidak sama!";
+    res.render("change-pass", { id, message });
+  }
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(password, salt);
+  password = hash;
+  try {
+    // Cek apakah data dengan nama yang sama sudah ada
+    await userModel.changePassword(id, password);
+    console.log(req.body);
+    // Kirim respons berhasil
+    res.render("success", { password });
+  } catch (error) {
+    // Tangani kesalahan server
+    res.status(500).json({
+      message: "Server error!",
+      serverMessage: error,
+    });
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  logout,
+  verify,
+  changePassView,
+  savePassword,
+};
