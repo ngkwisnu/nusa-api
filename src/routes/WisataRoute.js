@@ -1,10 +1,10 @@
 const express = require("express");
 const WisataController = require("../controllers/WisataController");
-
+const authentication = require("../middleware/validate.middleware");
 const router = express.Router();
 
 // Menampilkan semua data wisata
-router.get("/", WisataController.getAllWisata);
+router.get("/", authentication, WisataController.getAllWisata);
 // Menampilkan wisata sesuai dengan id
 router.get("/:id", WisataController.getWisataById);
 // Menambahkan data wisata

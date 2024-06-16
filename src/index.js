@@ -53,6 +53,8 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
+const { authentication } = require("./middleware/validate.middleware");
+
 const WisataRoute = require("./routes/WisataRoute");
 const UserRoute = require("./routes/UserRoute");
 const PusatBantuanRoute = require("./routes/PusatBantuanRoute");
@@ -69,20 +71,25 @@ app.use(
     { name: "gambar2" },
     { name: "gambar3" },
     { name: "gambar4" },
-  ]),
-  WisataRoute
+  ]), // Middleware authentication
+  WisataRoute // Middleware WisataRoute
 );
-app.use("/user", upload.fields([{ name: "foto", maxCount: 10 }]), UserRoute);
-app.use("/pusat-bantuan", PusatBantuanRoute);
+
+app.use(
+  "/user",
+  upload.fields([{ name: "foto", maxCount: 10 }]),
+  (authentication, UserRoute)
+);
+app.use("/pusat-bantuan", (authentication, PusatBantuanRoute));
 app.use(
   "/pesanan",
   upload.fields([{ name: "file", maxCount: 10 }]),
-  PesananRoute
+  (authentication, PesananRoute)
 );
 app.use(
   "/ulasan",
   upload.fields([{ name: "file", maxCount: 10 }]),
-  UlasanRoute
+  (authentication, UlasanRoute)
 );
 app.use("/auth", AuthRoute);
 

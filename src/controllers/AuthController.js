@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
+const { addToBlacklist } = require("../middleware/tokenBlacklist");
 
 const register = async (req, res) => {
   const salt = bcrypt.genSaltSync(10);
@@ -71,50 +72,44 @@ const login = async (req, res) => {
       });
     }
 
-    const { password: hashedPassword, role, ...rest } = user;
-
-    console.log(process.env);
+    const userData = {
+      username: user.username,
+      email: user.email,
+      password: user.password,
+    };
     //create jwt token
-    const token = jwt.sign(
-      { id: user.id, role: user.role },
-      "gahg48589a45ajfjAUFAHHFIhufuu",
-      { expiresIn: "15d" }
-    );
+    jwt.sign(userData, "gahg48589a45ajfjAUFAHHFIhufuu", (err, token) => {
+      if (err) throw err;
+      return res.status(200).json({
+        status: true,
+        message: "Login Successfully",
+        Authorization: `Bearer ${token}`,
+      });
+    });
 
     // set token in the browser cookies and send the response to the client
-    res
-      .cookie("accessToken", token, {
-        httpOnly: true,
-        expires: token.expiresIn,
-      })
-      .status(200)
-      .json({
-        message: "Login Success!",
-        token,
-        data: { ...rest },
-        role,
-      });
+    // res
+    //   .cookie("accessToken", token, {
+    //     httpOnly: true,
+    //     expires: token.expiresIn,
+    //   })
+    //   .status(200)
+    //   .json({
+    //     message: "Login Success!",
+    //     token,
+    //     data: { ...rest },
+    //     role,
+    //   });
   } catch (err) {
     console.error(err); // log the error
     res.status(500).json({ success: false, message: "Failed to log in" });
   }
 };
 
-const logout = async (req, res) => {
-  try {
-    const authHeader = req.headers["cookie"]; // get the session cookie from request header
-    if (!authHeader) return res.sendStatus(204); // No content
-    const cookie = authHeader.split("=")[1]; // If there is, split the cookie string to get the actual jwt token
-    const accessToken = cookie.split(";")[0];
-    res.setHeader("Clear-Site-Data", '"cookies"');
-    res.status(200).json({ message: "You are logged out!" });
-  } catch (error) {
-    res.status(500).json({
-      status: "error",
-      message: "Internal Server Error",
-    });
-  }
-  res.end();
+const logout = (req, res) => {
+  const token = req.headers["authorization"].split(" ")[1];
+  addToBlacklist(token);
+  res.status(200).json({ success: true, message: "Logout successful" });
 };
 
 const verify = async (req, res) => {
