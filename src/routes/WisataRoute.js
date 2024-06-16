@@ -4,7 +4,7 @@ const WisataController = require("../controllers/WisataController");
 const router = express.Router();
 
 // Menampilkan semua data wisata
-router.get("/", WisataController.getWisataByKategori);
+router.get("/", WisataController.getAllWisata);
 // Menampilkan wisata sesuai dengan id
 router.get("/:id", WisataController.getWisataById);
 // Menambahkan data wisata
