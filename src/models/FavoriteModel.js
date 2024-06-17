@@ -18,47 +18,41 @@ const getFavoriteByIdUser = async (id) => {
   }
 };
 
-// const addPesanan = (body, fileUrl) => {
-//     const { total, tanggal_pemesanan, tanggal_bayar, tanggal_keberangkatan, jumlah_orang, kode_booking, status, metode_pembayaran, id_user, id_wisata } = body;
-//     const SQLQuery = `
-//         INSERT INTO pesanan (total, tanggal_pemesanan, tanggal_bayar, tanggal_keberangkatan, jumlah_orang, kode_booking, file, status, metode_pembayaran, id_user, id_wisata)
-//         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-//     `;
-//     const values = [ total, tanggal_pemesanan, tanggal_bayar, tanggal_keberangkatan, jumlah_orang, kode_booking, fileUrl, status, metode_pembayaran, id_user, id_wisata ];
-//     return dbPool.execute(SQLQuery, values);
-// }
+const getFavoriteById = async (id) => {
+  try {
+    const result = await dbPool.query("SELECT * FROM favorite WHERE id = ?", [
+      id,
+    ]);
+    return result[0];
+  } catch (error) {
+    console.error("Error in getFavoriteById:", error);
+    throw error;
+  }
+};
 
-// const updatePesanan = (body, fileUrl, id) => {
-//     const { total, tanggal_pemesanan, tanggal_bayar, tanggal_keberangkatan, jumlah_orang, kode_booking, status, metode_pembayaran, id_user, id_wisata } = body;
-//     const SQLQuery = `
-//         UPDATE pesanan
-//         SET total = ?, tanggal_pemesanan = ?, tanggal_bayar = ?, tanggal_keberangkatan = ?, jumlah_orang = ?, kode_booking = ?, status = ?, metode_pembayaran = ?, id_user = ?, id_wisata = ?, file = ?
-//         WHERE id = ?
-//     `;
-//     const values =  [ total, tanggal_pemesanan, tanggal_bayar, tanggal_keberangkatan, jumlah_orang, kode_booking, status, metode_pembayaran, id_user, id_wisata, fileUrl, id ];
-//     return dbPool.execute(SQLQuery, values);
-// }
+const addFavorite = (body) => {
+  const { id_user, id_wisata } = body;
+  const SQLQuery = `
+        INSERT INTO favorite (id_user, id_wisata)
+        VALUES (?, ?)
+    `;
+  const values = [id_user, id_wisata];
+  return dbPool.execute(SQLQuery, values);
+};
 
-// const getPesananByKode = async(kode_booking) => {
-//     try {
-//         const [ hasil ] = await dbPool.query(`SELECT * FROM pesanan WHERE kode_booking = ?`, [kode_booking])
-//         return hasil
-//     } catch (error) {
-//         console.error('Error in getPesananByKode ', error)
-//         throw error
-//     }
-// }
-
-// const deletePesanan = async(id) => {
-//     try {
-//         await dbPool.query('DELETE FROM pesanan WHERE id = ?', [id]);
-//     } catch (error) {
-//         console.error('Error in deletePesanan:', error);
-//         throw error;
-//     }
-// }
+const deleteFavorite = async (id) => {
+  try {
+    await dbPool.query("DELETE FROM favorite WHERE id = ?", [id]);
+  } catch (error) {
+    console.error("Error in deleteFavorite:", error);
+    throw error;
+  }
+};
 
 module.exports = {
   getAllFavorite,
   getFavoriteByIdUser,
+  addFavorite,
+  deleteFavorite,
+  getFavoriteById,
 };
