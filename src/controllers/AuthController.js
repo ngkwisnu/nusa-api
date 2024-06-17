@@ -184,7 +184,7 @@ const changePassView = (req, res) => {
 const savePassword = async (req, res) => {
   let { id, password, konfirmasi } = req.body;
   if (password !== konfirmasi) {
-    const message = "Passowrd tidak sama!";
+    const message = "Passoword tidak sama!";
     res.render("change-pass", { id, message });
   }
   const salt = bcrypt.genSaltSync(10);
