@@ -84,6 +84,7 @@ const login = async (req, res) => {
         status: true,
         message: "Login Successfully",
         Authorization: `Bearer ${token}`,
+        data: user,
       });
     });
 

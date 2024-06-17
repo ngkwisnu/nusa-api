@@ -166,6 +166,19 @@ const getWisataByKategori = async (kategori) => {
   }
 };
 
+const getWisataByRating = async (rating) => {
+  try {
+    const [hasil] = await dbPool.query(
+      `SELECT * FROM wisata WHERE rating = ?`,
+      [rating]
+    );
+    return hasil;
+  } catch (error) {
+    console.error("Error in getWisataByRating ", error);
+    throw error;
+  }
+};
+
 const deleteWisata = async (id) => {
   try {
     await dbPool.query("DELETE FROM wisata WHERE id = ?", [id]);
@@ -183,4 +196,5 @@ module.exports = {
   updateWisata,
   deleteWisata,
   getWisataByKategori,
+  getWisataByRating,
 };

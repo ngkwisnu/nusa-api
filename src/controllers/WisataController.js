@@ -2,6 +2,7 @@ const wisataModel = require("../models/WisataModel");
 
 const getAllWisata = async (req, res) => {
   const kategori = req.query.kategori;
+  const rating = req.query.rating;
 
   if (kategori) {
     try {
@@ -15,6 +16,27 @@ const getAllWisata = async (req, res) => {
       } else {
         res.status(404).json({
           message: `Data wisata berdasarkan kategori: ${kategori} tidak ditemukan, tolong masukkan data dengan benar!`,
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        message: "Server error!",
+        serverMessage: error.message || "Internal server error.",
+      });
+    }
+  }
+
+  if (rating) {
+    try {
+      const wisata = await wisataModel.getWisataByRating(rating);
+      if (wisata.length > 0) {
+        res.json({
+          message: `Data wisata berdasarkan rating: ${rating} Berhasil Diambil!`,
+          data: wisata,
+        });
+      } else {
+        res.status(404).json({
+          message: `Data wisata berdasarkan rating: ${rating} tidak ditemukan, tolong masukkan data dengan benar!`,
         });
       }
     } catch (error) {
@@ -88,6 +110,27 @@ const getWisataByKategori = async (req, res) => {
 };
 
 const addWisata = async (req, res) => {
+  const { filter } = req.body;
+  if (filter) {
+    try {
+      const wisata = await wisataModel.getWisataByRating(filter);
+      if (wisata.length > 0) {
+        res.json({
+          message: `Data wisata berdasarkan rating: ${filter} Berhasil Diambil!`,
+          data: wisata,
+        });
+      } else {
+        res.status(404).json({
+          message: `Data wisata berdasarkan rating: ${filter} tidak ditemukan, tolong masukkan data dengan benar!`,
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        message: "Server error!",
+        serverMessage: error.message || "Internal server error.",
+      });
+    }
+  }
   const { body } = req;
   const gambar1 = req.files["gambar1"]
     ? req.files["gambar1"][0].filename
