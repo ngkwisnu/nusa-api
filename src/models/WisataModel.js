@@ -45,15 +45,19 @@ const addWisata = (body, gambar1Url, gambar2Url, gambar3Url, gambar4Url) => {
     informasi_tourguide,
     harga_termasuk,
     kategori,
+    rating,
+    payment_link,
   } = body;
   // console.log(body);
   const SQLQuery = `
-        INSERT INTO wisata (nama, lokasi, jam_buka, jam_tutup, jarak_lokasi, harga, deskripsi, gambar1, gambar2, gambar3, gambar4, informasi_tourguide, harga_termasuk, kategori, created_at, updated_at) 
+        INSERT INTO wisata (nama, lokasi, rating, payment_link, jam_buka, jam_tutup, jarak_lokasi, harga, deskripsi, gambar1, gambar2, gambar3, gambar4, informasi_tourguide, harga_termasuk, kategori, created_at, updated_at) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
   const values = [
     nama,
     lokasi,
+    rating,
+    payment_link,
     jam_buka,
     jam_tutup,
     jarak_lokasi,
@@ -104,15 +108,19 @@ const updateWisata = (
       informasi_tourguide,
       harga_termasuk,
       kategori,
+      rating,
+      payment_link,
     } = body;
     const SQLQuery = `
         UPDATE wisata 
-        SET nama = ?, lokasi = ?, jarak_lokasi = ?, harga = ?, deskripsi = ?, gambar1 = ?, gambar2 = ?, gambar3 = ?, gambar4 = ?, informasi_tourguide = ?, harga_termasuk = ?, kategori = ?, created_at = ?, updated_at = ? 
+        SET nama = ?, lokasi = ?, rating = ?, payment_link = ?, jarak_lokasi = ?, harga = ?, deskripsi = ?, gambar1 = ?, gambar2 = ?, gambar3 = ?, gambar4 = ?, informasi_tourguide = ?, harga_termasuk = ?, kategori = ?, created_at = ?, updated_at = ? 
         WHERE id = ?
     `;
     const values = [
       nama,
       lokasi,
+      rating,
+      payment_link,
       jarak_lokasi,
       harga,
       deskripsi,

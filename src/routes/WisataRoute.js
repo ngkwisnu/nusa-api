@@ -4,7 +4,7 @@ const authentication = require("../middleware/validate.middleware");
 const router = express.Router();
 
 // Menampilkan semua data wisata
-router.get("/", authentication, WisataController.getAllWisata);
+router.get("/", WisataController.getAllWisata);
 // Menampilkan wisata sesuai dengan id
 router.get("/:id", WisataController.getWisataById);
 // Menambahkan data wisata

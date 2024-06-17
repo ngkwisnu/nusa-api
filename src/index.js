@@ -53,7 +53,7 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
-const { authentication } = require("./middleware/validate.middleware");
+const authentication = require("./middleware/validate.middleware");
 
 const WisataRoute = require("./routes/WisataRoute");
 const UserRoute = require("./routes/UserRoute");
@@ -72,6 +72,7 @@ app.use(
     { name: "gambar3" },
     { name: "gambar4" },
   ]), // Middleware authentication
+  authentication,
   WisataRoute // Middleware WisataRoute
 );
 

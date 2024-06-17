@@ -205,6 +205,57 @@ const savePassword = async (req, res) => {
   }
 };
 
+const accountSecure = async (req, res) => {
+  let { latest_password, new_password, confirm } = req.body;
+  const { id } = req.params;
+  console.log(req.body);
+  const [result] = await userModel.getUserById(id);
+  if (!result == {}) {
+    res.status(404).json({
+      status: false,
+      message: "Akun tidak terdaftar",
+    });
+  }
+  const checkCorrectPassword = await bcrypt.compare(
+    latest_password,
+    result.password
+  );
+
+  //if password is wrong
+  if (!checkCorrectPassword) {
+    return res.status(401).json({
+      success: false,
+      message: "Password tidak sesuai!",
+    });
+  }
+
+  if (new_password !== confirm) {
+    return res.status(401).json({
+      success: false,
+      message: "Konfirmasi Password tidak tepat!",
+    });
+  }
+
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(new_password, salt);
+  new_password = hash;
+  try {
+    // Cek apakah data dengan nama yang sama sudah ada
+    await userModel.changePassword(id, new_password);
+    console.log(req.body);
+    res.status(201).json({
+      status: true,
+      message: "Password berhasil diubah!",
+    });
+  } catch (error) {
+    // Tangani kesalahan server
+    res.status(500).json({
+      message: "Server error!",
+      serverMessage: error,
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -212,4 +263,5 @@ module.exports = {
   verify,
   changePassView,
   savePassword,
+  accountSecure,
 };

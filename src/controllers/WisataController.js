@@ -112,6 +112,8 @@ const addWisata = async (req, res) => {
     "informasi_tourguide",
     "harga_termasuk",
     "kategori",
+    "rating",
+    "payment_link",
   ];
   const allFieldsPresent = requiredFields.every((field) =>
     Object.prototype.hasOwnProperty.call(body, field)
@@ -178,6 +180,8 @@ const updateWisata = async (req, res) => {
     "informasi_tourguide",
     "harga_termasuk",
     "kategori",
+    "rating",
+    "payment_link",
   ];
   const allFieldsPresent = requiredFields.every((field) =>
     Object.prototype.hasOwnProperty.call(body, field)
