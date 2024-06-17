@@ -1,7 +1,7 @@
 const http = require("http");
 const PORT = 5000;
-// const HOST = "0.0.0.0";
-const HOST = "localhost";
+const HOST = "0.0.0.0";
+// const HOST = "localhost";
 const express = require("express");
 const app = express();
 const path = require("path");
@@ -62,9 +62,11 @@ const PusatBantuanRoute = require("./routes/PusatBantuanRoute");
 const PesananRoute = require("./routes/PesananRoute");
 const UlasanRoute = require("./routes/UlasanRoute");
 const AuthRoute = require("./routes/AuthRoute");
+const FavoriteRoute = require("./routes/FavoriteRoute");
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use("/favorite", (authentication, FavoriteRoute));
 app.use(
   "/wisata",
   upload.fields([
